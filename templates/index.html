@@ -1,0 +1,111 @@
+<!doctype html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="background-color: rgb(248 250 252);	">
+    <div class="container p-3">            
+            <form class="row pb-4" action="/" method="GET">
+                <div class="col">
+                    <h1 class="text-primary">Sports Betting Arbitrage</h1>
+                </div>
+                <div class="col-auto">   
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <!-- <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> -->
+                        <input type="text" class="form-control" name="bankroll" id="bankroll" placeholder="Bet size (default $100)">
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select" name="sport_key" id="sport_key">
+                        <option value="americanfootball_ncaaf">NCAAF</option>
+                        <option value="americanfootball_nfl">NFL</option>
+                        <option value="aussierules_afl">AFL</option>
+                        <option value="baseball_mlb	">MLB</option>
+                        <option value="basketball_euroleague">Basketball Euroleague</option>
+                        <option value="basketball_nba">NBA</option>
+                        <option value="basketball_ncaab	">NCAAB</option>
+                        <option value="icehockey_nhl">NHL</option>
+                        <option value="icehockey_sweden_hockey_league">SHL</option>
+                        <option value="icehockey_sweden_allsvenskan">HockeyAllsvenskan</option>
+                        <option value="soccer_australia_aleague">A-League</option>
+                        <option value="rugbyleague_nrl">NRL</option>
+                        <option value="soccer_belgium_first_div">Belgium First Div</option>
+                        <option value="soccer_china_superleague">Super League - China	</option>
+                        <option value="soccer_denmark_superliga">Denmark Superliga	</option>
+                        <option value="soccer_finland_veikkausliiga">Veikkausliiga - Finland	</option>
+                        <option value="soccer_france_ligue_one">Ligue 1 - France	</option>
+                        <option value="soccer_france_ligue_two">Ligue 2 - France	</option>
+                        <option value="soccer_germany_bundesliga">Bundesliga - Germany	</option>
+                        <option value="soccer_germany_bundesliga2">Bundesliga 2 - Germany</option>
+                        <option value="soccer_italy_serie_a">Serie A - Italy	</option>
+                        <option value="soccer_italy_serie_b">Serie b - Italy	</option>
+                        <option value="soccer_japan_j_league">J League</option>
+                        <option value="soccer_korea_kleague1">K League 1</option>
+                        <option value="soccer_mexico_ligamx">Liga MX</option>
+                        <option value="soccer_league_of_ireland">League of Ireland</option>
+                        <option value="soccer_netherlands_eredivisie">Dutch Eredivisie</option>
+                        <option value="soccer_norway_eliteserien">Eliteserien - Norway</option>
+                        <option value="soccer_portugal_primeira_liga">Primeira Liga - Portugal</option>
+                        <option value="soccer_russia_premier_league">Premier League - Russia</option>
+                        <option value="soccer_spain_la_liga">La Liga - Spain</option>
+                        <option value="soccer_spain_segunda_division	">La Liga 2 - Spain	</option>
+                        <option value="soccer_epl">EPL</option>
+                        <option value="mma_mixed_martial_arts">MMA</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select" name="regions" id="regions">
+                        <option value="us">US</option>
+                        <option value="uk">UK</option>
+                        <option value="eu">EU</option>
+                        <option value="au">AU</option>
+                    </select>            
+                </div>
+                <div class="col-auto">                
+                    <button class="btn btn-primary" type="submit">Find Odds</button>
+                </div>
+            </form>
+        
+            
+                {% for arb_opp in arb_opps %}
+                <div style="background-color: rgb(229 231 235);" class="row mb-2 rounded pt-3 pb-3 px-1">
+                    <div class="col">
+                        <h5> {{arb_opp['match_data']['away_team']}} at {{arb_opp['match_data']['home_team']}} ({{(arb_opp['match_data']['commence_time'])}} UTC)</h5>
+                        {% for bookie in arb_opp['bookies'] %}
+                            <p class="m-0">{{arb_opp['match_data']['outcomes'][bookie]['name']}}: {{(100 / (arb_opp['bookies'][bookie]['price'] * arb_opp['odds']))|round|int}}% (${{(bank_roll / (arb_opp['bookies'][bookie]['price'] * arb_opp['odds']))|round|int}}) with {{arb_opp['bookies'][bookie]['bookmaker_name']}}
+                        {% endfor %} 
+                    </div>
+                    <div class="col">
+                        <p class="m-0">Return : {{(arb_opp['returns']['return']*100)|round(3)}}% (${{(arb_opp['returns']['return'])|round(3) * bank_roll}})</p>
+                        <p class="m-0">Annualized Return : {{(arb_opp['returns']['annualized_return']*100)|round|int}}% (${{(arb_opp['returns']['annualized_return'] * bank_roll)|round|int}})</p>
+                        <p class="m-0">Risk Adjusted Return : {{(arb_opp['returns']['adjusted_return']*100)|round(3)}}% (${{(arb_opp['returns']['adjusted_return'] * bank_roll)|round(3)}})</p>
+                        <p class="m-0">Risk Annualized Return : {{(arb_opp['returns']['adjusted_annualized_return']*100)|round|int}}% (${{(arb_opp['returns']['adjusted_annualized_return']* bank_roll)|round|int}})</p> 
+                    </div>
+                </div>
+                {% else %}
+                <div class="row mb-2">
+                    <h4>No arbitrage found for this combination of sport and market.</h4>
+                </div>
+                {% endfor %}
+        
+    </div>
+    <script>
+        function selectElement(id, valueToSelect) {    
+            let element = document.getElementById(id);
+            element.value = valueToSelect;
+        }
+        
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        // const params = Object.fromEntries(urlSearchParams.entries());
+
+        selectElement("sport_key", urlSearchParams.get("sport_key"))
+        selectElement("regions", urlSearchParams.get("regions"))
+        selectElement("bankroll", urlSearchParams.get("bankroll"))
+    </script>
+</body>
