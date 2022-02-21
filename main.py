@@ -23,7 +23,13 @@ def test():
     sport_key = request.args.get('sport_key')
     regions = request.args.get('regions')
     bankroll = request.args.get('bankroll')
-    if bankroll is None:
+    if sport_key is None and regions is None:
+        return render_template('welcome.html')
+    if sport_key is None:
+        sport_key = "soccer_epl"
+    if regions is None:
+        regions = "eu"
+    if bankroll is None or bankroll=='':
         bankroll = 100
     markets = "h2h"
     bookmakers_odds = getodds.get_upcoming_odds(sport_key, [regions], [markets])

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body class="d-flex flex-column min-vh-100" style="background-color: rgb(248 250 252);	">
-    <div class="container p-3">            
+    <div class="container p-3 h-100">            
             <form class="row pb-4" action="/" method="GET">
                 <div class="col">
                     <h1 class="text-primary"><a href="/" style="text-decoration: none;">Sports Betting Arbitrage</a></h1>
@@ -72,42 +72,9 @@
                 </div>
             </form>
         
-            
-                {% for arb_opp in arb_opps %}
-                <div style="background-color: rgb(229 231 235);" class="row mb-2 rounded pt-3 pb-3 px-1">
-                    <div class="col">
-                        <h5> {{arb_opp['match_data']['away_team']}} at {{arb_opp['match_data']['home_team']}} ({{(arb_opp['match_data']['commence_time'])}} UTC)</h5>
-                        {% for bookie in arb_opp['bookies'] %}
-                            <p class="m-0">{{arb_opp['match_data']['outcomes'][bookie]['name']}}: {{(100 / (arb_opp['bookies'][bookie]['price'] * arb_opp['odds']))|round|int}}% (${{(bank_roll / (arb_opp['bookies'][bookie]['price'] * arb_opp['odds']))|round|int}}) with {{arb_opp['bookies'][bookie]['bookmaker_name']}}
-                        {% endfor %} 
-                    </div>
-                    <div class="col">
-                        <p class="m-0">Return : {{(arb_opp['returns']['return']*100)|round(3)}}% (${{(arb_opp['returns']['return'])|round(3) * bank_roll}})</p>
-                        <p class="m-0">Annualized Return : {{(arb_opp['returns']['annualized_return']*100)|round|int}}% (${{(arb_opp['returns']['annualized_return'] * bank_roll)|round|int}})</p>
-                        <p class="m-0">Risk Adjusted Return : {{(arb_opp['returns']['adjusted_return']*100)|round(3)}}% (${{(arb_opp['returns']['adjusted_return'] * bank_roll)|round(3)}})</p>
-                        <p class="m-0">Risk Annualized Return : {{(arb_opp['returns']['adjusted_annualized_return']*100)|round|int}}% (${{(arb_opp['returns']['adjusted_annualized_return']* bank_roll)|round|int}})</p> 
-                    </div>
-                </div>
-                {% else %}
-                <div class="row mb-2">
-                    <h4>No arbitrage found for this combination of sport and market.</h4>
-                </div>
-                {% endfor %}
-        
+            <h4>Get started by choosing a sport and bet market above!</h4>
+            <p>Combinations likely to have arbitrage opportunities include EPL and EU bookmakers, MMA and US bookmakers and the Russian Premier League and EU bookmakers.</p>
     </div>
-    <script>
-        function selectElement(id, valueToSelect) {    
-            let element = document.getElementById(id);
-            element.value = valueToSelect;
-        }
-        
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        // const params = Object.fromEntries(urlSearchParams.entries());
-
-        selectElement("sport_key", urlSearchParams.get("sport_key"))
-        selectElement("regions", urlSearchParams.get("regions"))
-        selectElement("bankroll", urlSearchParams.get("bankroll"))
-    </script>
     <footer class="mt-auto m-4">
         <div class="container">
             <span class="text-muted">Made by Caidan Speth-McCrary. Send bugs and suggestions <a href="mailto:spethmccraryc@gmail.com">here</a>!</span>
